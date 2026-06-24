@@ -8,22 +8,22 @@
   <style>
     :root {
       color-scheme: light dark;
-      --text: #37352f;
-      --muted: #787774;
-      --tile: rgba(55, 53, 47, 0.045);
-      --border: rgba(55, 53, 47, 0.12);
-      --track: rgba(55, 53, 47, 0.1);
-      --progress: #37352f;
+      --text: #262626;
+      --muted: rgba(38, 38, 38, 0.46);
+      --line: rgba(38, 38, 38, 0.22);
+      --segment-off: rgba(38, 38, 38, 0.055);
+      --red: #c9302c;
+      --red-muted: rgba(201, 48, 44, 0.25);
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --text: rgba(255, 255, 255, 0.9);
-        --muted: rgba(255, 255, 255, 0.45);
-        --tile: rgba(255, 255, 255, 0.055);
-        --border: rgba(255, 255, 255, 0.12);
-        --track: rgba(255, 255, 255, 0.1);
-        --progress: rgba(255, 255, 255, 0.82);
+        --text: rgba(255, 255, 255, 0.88);
+        --muted: rgba(255, 255, 255, 0.42);
+        --line: rgba(255, 255, 255, 0.2);
+        --segment-off: rgba(255, 255, 255, 0.055);
+        --red: #ff453f;
+        --red-muted: rgba(255, 69, 63, 0.26);
       }
     }
 
@@ -34,7 +34,7 @@
     html,
     body {
       width: 100%;
-      height: 210px;
+      height: 245px;
       margin: 0;
       overflow: hidden;
       background: transparent;
@@ -44,226 +44,573 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 14px;
+      font-family: "Arial Narrow", Arial, sans-serif;
+    }
+
+    .widget {
+      display: grid;
+      width: min(100%, 630px);
+      height: 210px;
+      grid-template-rows: 31px minmax(0, 1fr) 36px;
+      overflow: hidden;
       color: var(--text);
-      font-family: Inter, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      border: 1px solid var(--line);
+      background: transparent;
     }
 
-    .clock {
+    .header {
       display: flex;
-      width: 100%;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .meta {
-      display: flex;
-      width: min(100%, 350px);
+      min-width: 0;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--line);
       color: var(--muted);
-      font-size: 10px;
-      font-weight: 600;
+      font-size: 9px;
+      font-weight: 700;
       text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .signal {
+      width: 6px;
+      height: 6px;
+      background: var(--red);
+      animation: signal 1s steps(2, end) infinite;
+    }
+
+    .content {
+      display: grid;
+      min-height: 0;
+      grid-template-columns: minmax(0, 1fr) 165px;
+    }
+
+    .clock-area {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 10px;
     }
 
     .time {
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 10px;
+      transform: skewX(-2deg);
+    }
+
+    .digit-group {
+      display: flex;
       gap: 7px;
     }
 
-    .group {
-      display: flex;
-      gap: 6px;
-    }
-
     .digit {
-      display: flex;
-      width: 64px;
-      height: 82px;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      background: var(--tile);
-      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-      font-size: 49px;
-      font-weight: 500;
-      line-height: 1;
-      font-variant-numeric: tabular-nums;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.025);
+      --width: 62px;
+      --height: 108px;
+      --thickness: 9px;
+
+      position: relative;
+      width: var(--width);
+      height: var(--height);
+      flex: 0 0 auto;
     }
 
-    .separator {
+    .segment {
+      position: absolute;
+      background: var(--segment-off);
+    }
+
+    .segment.active {
+      background: var(--text);
+    }
+
+    .segment.horizontal {
+      left: var(--thickness);
+      width: calc(100% - var(--thickness) * 2);
+      height: var(--thickness);
+      clip-path: polygon(
+        10% 0,
+        90% 0,
+        100% 50%,
+        90% 100%,
+        10% 100%,
+        0 50%
+      );
+    }
+
+    .segment.vertical {
+      width: var(--thickness);
+      height: 42%;
+      clip-path: polygon(
+        50% 0,
+        100% 10%,
+        100% 90%,
+        50% 100%,
+        0 90%,
+        0 10%
+      );
+    }
+
+    .a { top: 0; }
+    .g { top: 50%; transform: translateY(-50%); }
+    .d { bottom: 0; }
+    .f { top: 6%; left: 0; }
+    .b { top: 6%; right: 0; }
+    .e { bottom: 6%; left: 0; }
+    .c { right: 0; bottom: 6%; }
+
+    .colon {
       display: flex;
-      height: 82px;
+      width: 12px;
+      height: 58px;
+      flex: 0 0 auto;
+      flex-direction: column;
+      justify-content: space-between;
+      animation: blink 1s steps(2, end) infinite;
+    }
+
+    .colon span {
+      width: 9px;
+      height: 14px;
+      background: var(--text);
+      clip-path: polygon(25% 0, 100% 20%, 75% 100%, 0 80%);
+    }
+
+    .status-area {
+      display: grid;
+      min-width: 0;
+      min-height: 0;
+      grid-template-rows: 1fr 1fr;
+      gap: 8px;
+      padding: 10px;
+      border-left: 1px solid var(--line);
+    }
+
+    .status-box {
+      display: grid;
+      min-width: 0;
+      overflow: hidden;
+      grid-template-columns: minmax(0, 1fr) 42px;
+      border: 1px solid var(--red);
+    }
+
+    .status-copy {
+      display: flex;
+      min-width: 0;
       flex-direction: column;
       justify-content: center;
-      gap: 11px;
-      padding: 0 3px;
-    }
-
-    .separator span {
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: var(--muted);
-    }
-
-    .seconds {
-      display: flex;
-      width: min(100%, 350px);
-      align-items: center;
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .track {
-      height: 2px;
-      flex: 1;
       overflow: hidden;
-      background: var(--track);
+      padding-left: 9px;
+      color: var(--red);
     }
 
-    .progress {
-      width: 0;
-      height: 100%;
-      background: var(--progress);
-      transition: width 0.25s ease-out;
+    .status-copy strong {
+      overflow: hidden;
+      font-family: serif;
+      font-size: 21px;
+      line-height: 0.9;
+      white-space: nowrap;
     }
 
-    .second-value {
-      width: 20px;
+    .status-copy span {
+      margin-top: 4px;
+      overflow: hidden;
+      font-size: 9px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .stripes {
+      border-left: 1px solid var(--red);
+      background:
+        repeating-linear-gradient(
+          130deg,
+          var(--red) 0,
+          var(--red) 6px,
+          transparent 6px,
+          transparent 12px
+        );
+    }
+
+    .status-box.external {
+      border-color: var(--red-muted);
+    }
+
+    .status-box.external .status-copy {
+      color: var(--red-muted);
+    }
+
+    .status-box.external .stripes {
+      border-color: var(--red-muted);
+      opacity: 0.35;
+    }
+
+    .footer {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--line);
+    }
+
+    .mode {
+      position: relative;
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-right: 1px solid var(--line);
       color: var(--muted);
-      font-family: "SFMono-Regular", Consolas, monospace;
-      font-size: 10px;
-      font-variant-numeric: tabular-nums;
-      text-align: right;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
     }
 
-    @media (max-width: 430px) {
+    .mode:last-child {
+      border-right: 0;
+    }
+
+    .mode.active {
+      padding-bottom: 7px;
+      color: var(--text);
+    }
+
+    .mode.active::after {
+      position: absolute;
+      right: 28%;
+      bottom: 3px;
+      left: 28%;
+      height: 4px;
+      content: "";
+      background: var(--red);
+    }
+
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0.2; }
+    }
+
+    @keyframes signal {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0.25; }
+    }
+
+    @media (max-width: 480px) {
       html,
       body {
-        height: 174px;
+        height: 190px;
       }
 
-      .clock {
-        padding: 14px 10px;
+      body {
+        padding: 9px;
       }
 
-      .meta,
-      .seconds {
-        width: min(100%, 264px);
+      .widget {
+        height: 164px;
+        grid-template-rows: 27px minmax(0, 1fr) 30px;
+      }
+
+      .content {
+        grid-template-columns: minmax(0, 1fr) 125px;
+      }
+
+      .digit {
+        --width: 43px;
+        --height: 75px;
+        --thickness: 7px;
+      }
+
+      .digit-group {
+        gap: 5px;
+      }
+
+      .time {
+        gap: 6px;
+      }
+
+      .colon {
+        width: 8px;
+        height: 42px;
+      }
+
+      .colon span {
+        width: 6px;
+        height: 10px;
+      }
+
+      .status-area {
+        gap: 6px;
+        padding: 7px;
+      }
+
+      .status-box {
+        grid-template-columns: minmax(0, 1fr) 30px;
+      }
+
+      .status-copy {
+        padding-left: 6px;
+      }
+
+      .status-copy strong {
+        font-size: 16px;
+      }
+
+      .status-copy span {
+        margin-top: 2px;
+        font-size: 7px;
+      }
+    }
+
+    @media (max-width: 350px) {
+      .content {
+        grid-template-columns: 1fr;
+      }
+
+      .status-area {
+        display: none;
+      }
+
+      .header {
+        justify-content: center;
+      }
+
+      .header > span {
+        display: none;
+      }
+    }
+
+    /* 아주 좁아지면 숫자만 표시 */
+    @media (max-width: 240px) {
+      html,
+      body {
+        height: 84px;
+      }
+
+      body {
+        padding: 2px;
+      }
+
+      .widget {
+        display: flex;
+        width: 100%;
+        height: 80px;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+      }
+
+      .header,
+      .status-area,
+      .footer {
+        display: none;
+      }
+
+      .content {
+        display: block;
+      }
+
+      .clock-area {
+        padding: 0;
+      }
+
+      .digit {
+        --width: 27px;
+        --height: 50px;
+        --thickness: 4px;
+      }
+
+      .digit-group {
+        gap: 3px;
       }
 
       .time {
         gap: 5px;
       }
 
-      .group {
-        gap: 4px;
+      .colon {
+        width: 5px;
+        height: 29px;
+      }
+
+      .colon span {
+        width: 4px;
+        height: 7px;
+      }
+    }
+
+    @media (max-width: 140px) {
+      html,
+      body {
+        height: 64px;
+      }
+
+      .widget {
+        height: 60px;
       }
 
       .digit {
-        width: 48px;
-        height: 64px;
-        font-size: 37px;
+        --width: 17px;
+        --height: 34px;
+        --thickness: 3px;
       }
 
-      .separator {
-        height: 64px;
-        gap: 9px;
-        padding: 0 2px;
+      .digit-group {
+        gap: 2px;
       }
 
-      .separator span {
+      .time {
+        gap: 3px;
+      }
+
+      .colon {
+        width: 4px;
+        height: 20px;
+      }
+
+      .colon span {
         width: 3px;
-        height: 3px;
+        height: 5px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .colon,
+      .signal {
+        animation: none;
       }
     }
   </style>
 </head>
 
 <body>
-  <main class="clock" aria-label="대한민국 서울 현재 시각">
-    <div class="meta">
-      <span>Seoul, Korea</span>
-      <span id="date">0000. 00. 00</span>
-    </div>
-
-    <div class="time">
-      <div class="group">
-        <span class="digit" id="h1">0</span>
-        <span class="digit" id="h2">0</span>
+  <main class="widget" aria-label="대한민국 서울 현재 시각">
+    <header class="header">
+      <div class="header-left">
+        <span class="signal"></span>
+        <span>Active Time · Seoul</span>
       </div>
 
-      <div class="separator">
-        <span></span>
-        <span></span>
+      <span>Korea Standard Time</span>
+    </header>
+
+    <section class="content">
+      <div class="clock-area">
+        <div class="time">
+          <div class="digit-group">
+            <div class="digit"></div>
+            <div class="digit"></div>
+          </div>
+
+          <div class="colon">
+            <span></span>
+            <span></span>
+          </div>
+
+          <div class="digit-group">
+            <div class="digit"></div>
+            <div class="digit"></div>
+          </div>
+        </div>
       </div>
 
-      <div class="group">
-        <span class="digit" id="m1">0</span>
-        <span class="digit" id="m2">0</span>
-      </div>
-    </div>
+      <aside class="status-area">
+        <div class="status-box">
+          <div class="status-copy">
+            <strong>内部</strong>
+            <span>INTERNAL</span>
+          </div>
 
-    <div class="seconds">
-      <div class="track">
-        <div class="progress" id="progress"></div>
-      </div>
-      <span class="second-value" id="second">00</span>
-    </div>
+          <div class="stripes"></div>
+        </div>
+
+        <div class="status-box external">
+          <div class="status-copy">
+            <strong>外部</strong>
+            <span>EXTERNAL</span>
+          </div>
+
+          <div class="stripes"></div>
+        </div>
+      </aside>
+    </section>
+
+    <footer class="footer">
+      <span class="mode">Stop</span>
+      <span class="mode">Slow</span>
+      <span class="mode">Normal</span>
+      <span class="mode active">Racing</span>
+    </footer>
   </main>
 
   <script>
-    const timeFormatter = new Intl.DateTimeFormat("en-GB", {
+    const names = ["a", "b", "c", "d", "e", "f", "g"];
+
+    const digitSegments = {
+      0: ["a", "b", "c", "d", "e", "f"],
+      1: ["b", "c"],
+      2: ["a", "b", "d", "e", "g"],
+      3: ["a", "b", "c", "d", "g"],
+      4: ["b", "c", "f", "g"],
+      5: ["a", "c", "d", "f", "g"],
+      6: ["a", "c", "d", "e", "f", "g"],
+      7: ["a", "b", "c"],
+      8: ["a", "b", "c", "d", "e", "f", "g"],
+      9: ["a", "b", "c", "d", "f", "g"]
+    };
+
+    const digits = [...document.querySelectorAll(".digit")];
+
+    digits.forEach(digit => {
+      names.forEach(name => {
+        const segment = document.createElement("span");
+        const orientation = ["a", "d", "g"].includes(name)
+          ? "horizontal"
+          : "vertical";
+
+        segment.className = `segment ${orientation} ${name}`;
+        digit.appendChild(segment);
+      });
+    });
+
+    const formatter = new Intl.DateTimeFormat("en-GB", {
       timeZone: "Asia/Seoul",
       hour: "2-digit",
       minute: "2-digit",
-      second: "2-digit",
       hourCycle: "h23"
     });
 
-    const dateFormatter = new Intl.DateTimeFormat("ko-KR", {
-      timeZone: "Asia/Seoul",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      weekday: "short"
-    });
+    function setDigit(element, value) {
+      names.forEach(name => {
+        element
+          .querySelector(`.${name}`)
+          .classList.toggle(
+            "active",
+            digitSegments[value].includes(name)
+          );
+      });
+    }
 
     function updateClock() {
-      const now = new Date();
-
       const parts = Object.fromEntries(
-        timeFormatter
-          .formatToParts(now)
+        formatter
+          .formatToParts(new Date())
           .filter(part => part.type !== "literal")
           .map(part => [part.type, part.value])
       );
 
-      const hour = parts.hour;
-      const minute = parts.minute;
-      const second = Number(parts.second);
+      const time = `${parts.hour}${parts.minute}`;
 
-      document.getElementById("h1").textContent = hour[0];
-      document.getElementById("h2").textContent = hour[1];
-      document.getElementById("m1").textContent = minute[0];
-      document.getElementById("m2").textContent = minute[1];
-      document.getElementById("second").textContent =
-        String(second).padStart(2, "0");
-
-      document.getElementById("progress").style.width =
-        `${((second + 1) / 60) * 100}%`;
-
-      document.getElementById("date").textContent =
-        dateFormatter.format(now).replaceAll(" ", " · ");
+      digits.forEach((digit, index) => {
+        setDigit(digit, time[index]);
+      });
     }
 
     updateClock();
