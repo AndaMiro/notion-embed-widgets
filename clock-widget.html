@@ -1,3 +1,4 @@
+```html preview
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -34,7 +35,7 @@
     html,
     body {
       width: 100%;
-      height: 210px;
+      height: 230px;
       margin: 0;
       overflow: hidden;
       background: transparent;
@@ -51,8 +52,8 @@
     .widget {
       display: grid;
       width: 100%;
-      height: 210px;
-      grid-template-rows: 31px minmax(0, 1fr) 36px;
+      height: 230px;
+      grid-template-rows: 36px minmax(0, 1fr) 42px;
       overflow: hidden;
       color: var(--text);
       border: 1px solid var(--line);
@@ -64,13 +65,13 @@
       min-width: 0;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      padding: 0 14px;
+      gap: 12px;
+      padding: 0 16px;
       overflow: hidden;
       border-bottom: 1px solid var(--line);
       color: var(--muted);
-      font-size: 9px;
-      font-weight: 700;
+      font-size: 11px;
+      font-weight: 800;
       text-transform: uppercase;
       white-space: nowrap;
     }
@@ -80,7 +81,7 @@
       display: flex;
       min-width: 0;
       align-items: center;
-      gap: 8px;
+      gap: 9px;
     }
 
     .header-right {
@@ -90,11 +91,12 @@
 
     .date-label {
       color: var(--text);
+      font-size: 12px;
     }
 
     .signal {
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       flex: 0 0 auto;
       background: var(--red);
     }
@@ -106,7 +108,7 @@
     .content {
       display: grid;
       min-height: 0;
-      grid-template-columns: minmax(0, 1fr) 165px;
+      grid-template-columns: minmax(0, 1fr) 185px;
     }
 
     .clock-area {
@@ -121,19 +123,19 @@
     .time {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       transform: skewX(-2deg);
     }
 
     .digit-group {
       display: flex;
-      gap: 7px;
+      gap: 8px;
     }
 
     .digit {
-      --width: 62px;
-      --height: 108px;
-      --thickness: 9px;
+      --width: 68px;
+      --height: 118px;
+      --thickness: 10px;
 
       position: relative;
       width: var(--width);
@@ -187,8 +189,8 @@
 
     .colon {
       display: flex;
-      width: 12px;
-      height: 58px;
+      width: 13px;
+      height: 64px;
       flex: 0 0 auto;
       flex-direction: column;
       justify-content: space-between;
@@ -200,8 +202,8 @@
     }
 
     .colon span {
-      width: 9px;
-      height: 14px;
+      width: 10px;
+      height: 15px;
       background: var(--text);
       clip-path: polygon(25% 0, 100% 20%, 75% 100%, 0 80%);
     }
@@ -211,8 +213,8 @@
       min-width: 0;
       min-height: 0;
       grid-template-rows: 1fr 1fr;
-      gap: 8px;
-      padding: 10px;
+      gap: 9px;
+      padding: 11px;
       border-left: 1px solid var(--line);
     }
 
@@ -220,7 +222,7 @@
       display: grid;
       min-width: 0;
       overflow: hidden;
-      grid-template-columns: minmax(0, 1fr) 42px;
+      grid-template-columns: minmax(0, 1fr) 45px;
       border: 1px solid var(--red);
     }
 
@@ -230,23 +232,23 @@
       flex-direction: column;
       justify-content: center;
       overflow: hidden;
-      padding-left: 9px;
+      padding-left: 10px;
       color: var(--red);
     }
 
     .status-copy strong {
       overflow: hidden;
       font-family: serif;
-      font-size: 21px;
+      font-size: 27px;
       line-height: 0.9;
       white-space: nowrap;
     }
 
     .status-copy span {
-      margin-top: 4px;
+      margin-top: 5px;
       overflow: hidden;
-      font-size: 9px;
-      font-weight: 800;
+      font-size: 11px;
+      font-weight: 900;
       white-space: nowrap;
     }
 
@@ -256,9 +258,9 @@
         repeating-linear-gradient(
           130deg,
           var(--red) 0,
-          var(--red) 6px,
-          transparent 6px,
-          transparent 12px
+          var(--red) 7px,
+          transparent 7px,
+          transparent 13px
         );
     }
 
@@ -290,8 +292,8 @@
       overflow: hidden;
       border-right: 1px solid var(--line);
       color: var(--muted);
-      font-size: 9px;
-      font-weight: 700;
+      font-size: 11px;
+      font-weight: 800;
       text-transform: uppercase;
     }
 
@@ -300,38 +302,47 @@
     }
 
     .mode.active {
-      padding-bottom: 7px;
+      padding-bottom: 8px;
       color: var(--text);
     }
 
     .mode.active::after {
       position: absolute;
-      right: 28%;
-      bottom: 3px;
-      left: 28%;
-      height: 4px;
+      right: 26%;
+      bottom: 4px;
+      left: 26%;
+      height: 5px;
       content: "";
       background: var(--red);
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 520px) {
       html,
       body {
-        height: 164px;
+        height: 178px;
       }
 
       .widget {
-        height: 164px;
-        grid-template-rows: 27px minmax(0, 1fr) 30px;
+        height: 178px;
+        grid-template-rows: 30px minmax(0, 1fr) 34px;
+      }
+
+      .header {
+        padding: 0 12px;
+        font-size: 9px;
+      }
+
+      .date-label {
+        font-size: 10px;
       }
 
       .content {
-        grid-template-columns: minmax(0, 1fr) 132px;
+        grid-template-columns: minmax(0, 1fr) 150px;
       }
 
       .digit {
-        --width: 43px;
-        --height: 75px;
+        --width: 47px;
+        --height: 82px;
         --thickness: 7px;
       }
 
@@ -340,56 +351,60 @@
       }
 
       .time {
-        gap: 6px;
+        gap: 7px;
       }
 
       .colon {
-        width: 8px;
-        height: 42px;
+        width: 9px;
+        height: 45px;
       }
 
       .colon span {
-        width: 6px;
-        height: 10px;
+        width: 7px;
+        height: 11px;
       }
 
       .status-area {
-        gap: 6px;
+        gap: 7px;
         padding: 7px;
       }
 
       .status-box {
-        grid-template-columns: minmax(0, 1fr) 30px;
+        grid-template-columns: minmax(0, 1fr) 32px;
       }
 
       .status-copy {
-        padding-left: 6px;
+        padding-left: 7px;
       }
 
       .status-copy strong {
-        font-size: 17px;
+        font-size: 21px;
       }
 
       .status-copy span {
-        margin-top: 2px;
-        font-size: 8px;
+        margin-top: 3px;
+        font-size: 9px;
+      }
+
+      .mode {
+        font-size: 9px;
       }
     }
 
-    @media (max-width: 350px) {
+    @media (max-width: 360px) {
       html,
       body {
-        height: 148px;
+        height: 158px;
       }
 
       .widget {
-        height: 148px;
-        grid-template-rows: 25px minmax(0, 1fr) 28px;
+        height: 158px;
+        grid-template-rows: 27px minmax(0, 1fr) 30px;
       }
 
       .header {
         padding: 0 8px;
-        font-size: 7px;
+        font-size: 8px;
       }
 
       .header-left {
@@ -400,17 +415,21 @@
         display: none;
       }
 
+      .date-label {
+        font-size: 9px;
+      }
+
       .content {
-        grid-template-columns: minmax(0, 1fr) 96px;
+        grid-template-columns: minmax(0, 1fr) 112px;
       }
 
       .clock-area {
-        padding: 6px;
+        padding: 5px;
       }
 
       .digit {
-        --width: 34px;
-        --height: 62px;
+        --width: 36px;
+        --height: 66px;
         --thickness: 5px;
       }
 
@@ -424,7 +443,7 @@
 
       .colon {
         width: 6px;
-        height: 34px;
+        height: 35px;
       }
 
       .colon span {
@@ -438,7 +457,7 @@
       }
 
       .status-box {
-        grid-template-columns: minmax(0, 1fr) 20px;
+        grid-template-columns: minmax(0, 1fr) 22px;
       }
 
       .status-copy {
@@ -446,32 +465,32 @@
       }
 
       .status-copy strong {
-        font-size: 15px;
+        font-size: 18px;
       }
 
       .status-copy span {
-        font-size: 6px;
+        font-size: 7px;
       }
 
       .mode {
-        font-size: 7px;
+        font-size: 8px;
       }
     }
 
-    @media (max-width: 260px) and (min-width: 161px) {
+    @media (max-width: 270px) and (min-width: 151px) {
       html,
       body {
-        height: 128px;
+        height: 138px;
       }
 
       .widget {
-        height: 128px;
-        grid-template-rows: 22px minmax(0, 1fr) 24px;
+        height: 138px;
+        grid-template-rows: 24px minmax(0, 1fr) 26px;
       }
 
       .header {
         padding: 0 6px;
-        font-size: 6px;
+        font-size: 7px;
       }
 
       .date-label {
@@ -484,7 +503,7 @@
       }
 
       .content {
-        grid-template-columns: minmax(0, 1fr) 76px;
+        grid-template-columns: minmax(0, 1fr) 86px;
       }
 
       .clock-area {
@@ -492,8 +511,8 @@
       }
 
       .digit {
-        --width: 26px;
-        --height: 50px;
+        --width: 28px;
+        --height: 52px;
         --thickness: 4px;
       }
 
@@ -507,7 +526,7 @@
 
       .colon {
         width: 5px;
-        height: 28px;
+        height: 29px;
       }
 
       .colon span {
@@ -521,7 +540,7 @@
       }
 
       .status-box {
-        grid-template-columns: minmax(0, 1fr) 14px;
+        grid-template-columns: minmax(0, 1fr) 15px;
       }
 
       .status-copy {
@@ -529,7 +548,7 @@
       }
 
       .status-copy strong {
-        font-size: 12px;
+        font-size: 15px;
       }
 
       .status-copy span {
@@ -537,7 +556,7 @@
       }
 
       .mode {
-        font-size: 6px;
+        font-size: 7px;
       }
 
       .mode.active {
@@ -550,16 +569,16 @@
       }
     }
 
-    @media (max-width: 160px) {
+    @media (max-width: 150px) {
       html,
       body {
-        height: 80px;
+        height: 84px;
       }
 
       .widget {
         display: flex;
         width: 100%;
-        height: 80px;
+        height: 84px;
         align-items: center;
         justify-content: center;
         border: 0;
@@ -580,8 +599,8 @@
       }
 
       .digit {
-        --width: 24px;
-        --height: 46px;
+        --width: 25px;
+        --height: 48px;
         --thickness: 4px;
       }
 
@@ -595,7 +614,7 @@
 
       .colon {
         width: 5px;
-        height: 27px;
+        height: 28px;
       }
 
       .colon span {
@@ -608,7 +627,7 @@
       html,
       body,
       .widget {
-        height: 60px;
+        height: 62px;
       }
 
       .digit {
@@ -781,3 +800,4 @@
   </script>
 </body>
 </html>
+```
