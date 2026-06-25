@@ -64,6 +64,7 @@
       min-width: 0;
       align-items: center;
       justify-content: space-between;
+      gap: 10px;
       padding: 0 14px;
       overflow: hidden;
       border-bottom: 1px solid var(--line);
@@ -74,10 +75,21 @@
       white-space: nowrap;
     }
 
-    .header-left {
+    .header-left,
+    .header-right {
       display: flex;
+      min-width: 0;
       align-items: center;
       gap: 8px;
+    }
+
+    .header-right {
+      flex: 0 1 auto;
+      justify-content: flex-end;
+    }
+
+    .date-label {
+      color: var(--text);
     }
 
     .signal {
@@ -317,7 +329,7 @@
       }
 
       .content {
-        grid-template-columns: minmax(0, 1fr) 125px;
+        grid-template-columns: minmax(0, 1fr) 132px;
       }
 
       .digit {
@@ -358,37 +370,28 @@
       }
 
       .status-copy strong {
-        font-size: 16px;
+        font-size: 17px;
       }
 
       .status-copy span {
         margin-top: 2px;
-        font-size: 7px;
+        font-size: 8px;
       }
     }
 
     @media (max-width: 350px) {
-      .content {
-        grid-template-columns: 1fr;
+      html,
+      body {
+        height: 148px;
       }
 
-      .status-area {
-        display: none;
+      .widget {
+        height: 148px;
+        grid-template-rows: 25px minmax(0, 1fr) 28px;
       }
 
       .header {
-        justify-content: center;
-      }
-
-      .header > span {
-        display: none;
-      }
-    }
-
-    /* 좁아져도 전체 레이아웃을 유지하면서 숫자만 축소 */
-    @media (max-width: 260px) and (min-width: 161px) {
-      .header {
-        padding: 0 7px;
+        padding: 0 8px;
         font-size: 7px;
       }
 
@@ -396,18 +399,21 @@
         gap: 5px;
       }
 
-      .signal {
-        width: 4px;
-        height: 4px;
+      .header-left > span:last-child {
+        display: none;
+      }
+
+      .content {
+        grid-template-columns: minmax(0, 1fr) 96px;
       }
 
       .clock-area {
-        padding: 4px;
+        padding: 6px;
       }
 
       .digit {
-        --width: 32px;
-        --height: 58px;
+        --width: 34px;
+        --height: 62px;
         --thickness: 5px;
       }
 
@@ -429,12 +435,124 @@
         height: 8px;
       }
 
+      .status-area {
+        gap: 5px;
+        padding: 5px;
+      }
+
+      .status-box {
+        grid-template-columns: minmax(0, 1fr) 20px;
+      }
+
+      .status-copy {
+        padding-left: 5px;
+      }
+
+      .status-copy strong {
+        font-size: 15px;
+      }
+
+      .status-copy span {
+        font-size: 6px;
+      }
+
       .mode {
         font-size: 7px;
       }
     }
 
-    /* 160px 이하에서만 숫자 전용으로 전환 */
+    @media (max-width: 260px) and (min-width: 161px) {
+      html,
+      body {
+        height: 128px;
+      }
+
+      .widget {
+        height: 128px;
+        grid-template-rows: 22px minmax(0, 1fr) 24px;
+      }
+
+      .header {
+        padding: 0 6px;
+        font-size: 6px;
+      }
+
+      .date-label {
+        display: none;
+      }
+
+      .signal {
+        width: 4px;
+        height: 4px;
+      }
+
+      .content {
+        grid-template-columns: minmax(0, 1fr) 76px;
+      }
+
+      .clock-area {
+        padding: 3px;
+      }
+
+      .digit {
+        --width: 26px;
+        --height: 50px;
+        --thickness: 4px;
+      }
+
+      .digit-group {
+        gap: 2px;
+      }
+
+      .time {
+        gap: 3px;
+      }
+
+      .colon {
+        width: 5px;
+        height: 28px;
+      }
+
+      .colon span {
+        width: 4px;
+        height: 6px;
+      }
+
+      .status-area {
+        gap: 4px;
+        padding: 4px;
+      }
+
+      .status-box {
+        grid-template-columns: minmax(0, 1fr) 14px;
+      }
+
+      .status-copy {
+        padding-left: 4px;
+      }
+
+      .status-copy strong {
+        font-size: 12px;
+      }
+
+      .status-copy span {
+        display: none;
+      }
+
+      .mode {
+        font-size: 6px;
+      }
+
+      .mode.active {
+        padding-bottom: 5px;
+      }
+
+      .mode.active::after {
+        bottom: 2px;
+        height: 3px;
+      }
+    }
+
     @media (max-width: 160px) {
       html,
       body {
@@ -538,7 +656,10 @@
         <span>Active Time · Seoul</span>
       </div>
 
-      <span>Korea Standard Time</span>
+      <div class="header-right">
+        <span class="date-label" id="dateLabel">0000.00.00</span>
+        <span>Korea Standard Time</span>
+      </div>
     </header>
 
     <section class="content">
@@ -592,6 +713,7 @@
 
   <script>
     const names = ["a", "b", "c", "d", "e", "f", "g"];
+    const dateLabel = document.getElementById("dateLabel");
 
     const digitSegments = {
       0: ["a", "b", "c", "d", "e", "f"],
@@ -622,6 +744,9 @@
 
     const formatter = new Intl.DateTimeFormat("en-GB", {
       timeZone: "Asia/Seoul",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
       hour: "2-digit",
       minute: "2-digit",
       hourCycle: "h23"
@@ -651,6 +776,8 @@
       digits.forEach((digit, index) => {
         setDigit(digit, time[index]);
       });
+
+      dateLabel.textContent = `${parts.year}.${parts.month}.${parts.day}`;
     }
 
     updateClock();
