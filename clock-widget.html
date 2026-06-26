@@ -14,7 +14,6 @@
       --segment-off: rgba(38, 38, 38, 0.055);
       --red: #c9302c;
       --red-muted: rgba(201, 48, 44, 0.25);
-
       --time-scale: 1;
     }
 
@@ -36,25 +35,29 @@
     html,
     body {
       width: 100%;
-      height: 230px;
+      height: 100%;
       margin: 0;
+      padding: 0;
       overflow: hidden;
       background: transparent;
     }
 
     body {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
+      align-items: stretch;
+      justify-content: stretch;
       font-family: "Arial Narrow", Arial, sans-serif;
     }
 
     .widget {
       display: grid;
       width: 100%;
-      height: 230px;
-      grid-template-rows: 36px minmax(0, 1fr) 42px;
+      height: 100%;
+      min-height: 0;
+      grid-template-rows:
+        clamp(24px, 16%, 36px)
+        minmax(0, 1fr)
+        clamp(28px, 18%, 42px);
       overflow: hidden;
       color: var(--text);
       border: 1px solid var(--line);
@@ -64,14 +67,15 @@
     .header {
       display: flex;
       min-width: 0;
+      min-height: 0;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 0 16px;
+      padding: 0 clamp(8px, 2.5vw, 16px);
       overflow: hidden;
       border-bottom: 1px solid var(--line);
       color: var(--muted);
-      font-size: 11px;
+      font-size: clamp(7px, 1.9vw, 11px);
       font-weight: 800;
       text-transform: uppercase;
       white-space: nowrap;
@@ -82,7 +86,8 @@
       display: flex;
       min-width: 0;
       align-items: center;
-      gap: 9px;
+      gap: clamp(5px, 1.4vw, 9px);
+      overflow: hidden;
     }
 
     .header-right {
@@ -91,13 +96,14 @@
     }
 
     .date-label {
+      flex: 0 0 auto;
       color: var(--text);
-      font-size: 12px;
+      font-size: clamp(8px, 2vw, 12px);
     }
 
     .signal {
-      width: 7px;
-      height: 7px;
+      width: clamp(4px, 1.3vw, 7px);
+      height: clamp(4px, 1.3vw, 7px);
       flex: 0 0 auto;
       background: var(--red);
     }
@@ -108,8 +114,9 @@
 
     .content {
       display: grid;
+      min-width: 0;
       min-height: 0;
-      grid-template-columns: minmax(0, 1fr) 190px;
+      grid-template-columns: minmax(0, 1fr) clamp(88px, 30vw, 190px);
     }
 
     .clock-area {
@@ -119,12 +126,15 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      padding: 10px;
+      padding: clamp(3px, 1.8vw, 10px);
     }
 
     .time {
       display: flex;
+      max-width: 100%;
+      max-height: 100%;
       align-items: center;
+      justify-content: center;
       gap: calc(12px * var(--time-scale));
       transform: skewX(-2deg);
       transform-origin: center;
@@ -133,6 +143,7 @@
     .digit-group {
       display: flex;
       gap: calc(8px * var(--time-scale));
+      flex: 0 0 auto;
     }
 
     .digit {
@@ -215,47 +226,53 @@
       display: grid;
       min-width: 0;
       min-height: 0;
-      grid-template-rows: 1fr 1fr;
-      gap: 10px;
-      padding: 11px;
+      grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(4px, 1.8vw, 10px);
+      padding: clamp(4px, 1.8vw, 11px);
       border-left: 1px solid var(--line);
+      overflow: hidden;
     }
 
     .status-box {
       display: grid;
       min-width: 0;
+      min-height: 0;
       overflow: hidden;
-      grid-template-columns: minmax(0, 1fr) 46px;
+      grid-template-columns: minmax(0, 1fr) clamp(14px, 7vw, 46px);
       border: 1px solid var(--red);
     }
 
     .status-copy {
       display: flex;
       min-width: 0;
+      min-height: 0;
       flex-direction: column;
       justify-content: center;
       overflow: hidden;
-      padding-left: 10px;
+      padding-left: clamp(4px, 1.8vw, 10px);
       color: var(--red);
     }
 
     .status-copy strong {
+      display: block;
       overflow: hidden;
       font-family: serif;
-      font-size: 27px;
+      font-size: clamp(14px, 6vw, 27px);
       line-height: 0.9;
       white-space: nowrap;
     }
 
     .status-copy span {
-      margin-top: 5px;
+      display: block;
+      margin-top: clamp(2px, 1vw, 5px);
       overflow: hidden;
-      font-size: 11px;
+      font-size: clamp(7px, 2.5vw, 11px);
       font-weight: 900;
       white-space: nowrap;
     }
 
     .stripes {
+      min-width: 0;
       border-left: 1px solid var(--red);
       background:
         repeating-linear-gradient(
@@ -282,22 +299,26 @@
 
     .footer {
       display: grid;
+      min-height: 0;
       grid-template-columns: repeat(4, 1fr);
       border-top: 1px solid var(--line);
+      overflow: hidden;
     }
 
     .mode {
       position: relative;
       display: flex;
       min-width: 0;
+      min-height: 0;
       align-items: center;
       justify-content: center;
       overflow: hidden;
       border-right: 1px solid var(--line);
       color: var(--muted);
-      font-size: 11px;
+      font-size: clamp(7px, 2vw, 11px);
       font-weight: 800;
       text-transform: uppercase;
+      white-space: nowrap;
     }
 
     .mode:last-child {
@@ -305,246 +326,80 @@
     }
 
     .mode.active {
-      padding-bottom: 8px;
+      padding-bottom: clamp(5px, 1.6vw, 8px);
       color: var(--text);
     }
 
     .mode.active::after {
       position: absolute;
       right: 26%;
-      bottom: 4px;
+      bottom: clamp(2px, 1vw, 4px);
       left: 26%;
-      height: 5px;
+      height: clamp(3px, 1.2vw, 5px);
       content: "";
       background: var(--red);
     }
 
-    @media (max-width: 520px) {
-      html,
-      body {
-        height: 178px;
-      }
-
-      .widget {
-        height: 178px;
-        grid-template-rows: 30px minmax(0, 1fr) 34px;
-      }
-
-      .header {
-        padding: 0 12px;
-        font-size: 9px;
-      }
-
-      .date-label {
-        font-size: 10px;
-      }
-
-      .content {
-        grid-template-columns: minmax(0, 1fr) 155px;
-      }
-
-      .status-area {
-        gap: 7px;
-        padding: 7px;
-      }
-
-      .status-box {
-        grid-template-columns: minmax(0, 1fr) 34px;
-      }
-
-      .status-copy {
-        padding-left: 7px;
-      }
-
-      .status-copy strong {
-        font-size: 22px;
-      }
-
-      .status-copy span {
-        margin-top: 3px;
-        font-size: 9px;
-      }
-
-      .mode {
-        font-size: 9px;
-      }
-    }
-
     @media (max-width: 360px) {
-      html,
-      body {
-        height: 158px;
-      }
-
-      .widget {
-        height: 158px;
-        grid-template-rows: 27px minmax(0, 1fr) 30px;
-      }
-
-      .header {
-        padding: 0 8px;
-        font-size: 8px;
-      }
-
-      .header-left {
-        gap: 5px;
-      }
-
       .header-left > span:last-child {
         display: none;
       }
 
-      .date-label {
-        font-size: 9px;
-      }
-
       .content {
-        grid-template-columns: minmax(0, 1fr) 118px;
-      }
-
-      .clock-area {
-        padding: 5px;
-      }
-
-      .status-area {
-        gap: 5px;
-        padding: 5px;
-      }
-
-      .status-box {
-        grid-template-columns: minmax(0, 1fr) 24px;
-      }
-
-      .status-copy {
-        padding-left: 5px;
-      }
-
-      .status-copy strong {
-        font-size: 18px;
+        grid-template-columns: minmax(0, 1fr) clamp(76px, 34vw, 118px);
       }
 
       .status-copy span {
-        font-size: 7px;
-      }
-
-      .mode {
-        font-size: 8px;
+        font-size: clamp(6px, 2.4vw, 8px);
       }
     }
 
-    @media (max-width: 270px) and (min-width: 151px) {
-      html,
-      body {
-        height: 138px;
-      }
-
-      .widget {
-        height: 138px;
-        grid-template-rows: 24px minmax(0, 1fr) 26px;
-      }
-
-      .header {
-        padding: 0 6px;
-        font-size: 7px;
-      }
-
+    @media (max-width: 260px) {
       .date-label {
         display: none;
-      }
-
-      .signal {
-        width: 4px;
-        height: 4px;
-      }
-
-      .content {
-        grid-template-columns: minmax(0, 1fr) 90px;
-      }
-
-      .clock-area {
-        padding: 3px;
-      }
-
-      .status-area {
-        gap: 4px;
-        padding: 4px;
-      }
-
-      .status-box {
-        grid-template-columns: minmax(0, 1fr) 16px;
-      }
-
-      .status-copy {
-        padding-left: 4px;
-      }
-
-      .status-copy strong {
-        font-size: 15px;
       }
 
       .status-copy span {
         display: none;
       }
 
-      .mode {
-        font-size: 7px;
-      }
-
-      .mode.active {
-        padding-bottom: 5px;
-      }
-
-      .mode.active::after {
-        bottom: 2px;
-        height: 3px;
-      }
-    }
-
-    @media (max-width: 150px) {
-      html,
-      body {
-        height: 84px;
-      }
-
-      .widget {
-        display: flex;
-        width: 100%;
-        height: 84px;
-        align-items: center;
-        justify-content: center;
-        border: 0;
-      }
-
-      .header,
-      .status-area,
-      .footer {
-        display: none;
-      }
-
       .content {
-        display: block;
-      }
-
-      .clock-area {
-        padding: 0;
+        grid-template-columns: minmax(0, 1fr) clamp(68px, 35vw, 92px);
       }
     }
 
-    @media (max-width: 110px) {
-      html,
-      body,
-      .widget {
-        height: 62px;
-      }
+    .widget.numbers-only {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+    }
+
+    .widget.numbers-only .header,
+    .widget.numbers-only .status-area,
+    .widget.numbers-only .footer {
+      display: none;
+    }
+
+    .widget.numbers-only .content {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .widget.numbers-only .clock-area {
+      width: 100%;
+      height: 100%;
+      padding: 0;
     }
   </style>
 </head>
 
 <body>
-  <main class="widget" aria-label="대한민국 서울 현재 시각">
+  <main class="widget" id="widget" aria-label="대한민국 서울 현재 시각">
     <header class="header">
       <div class="header-left">
-        <span class="signal"></span>
+        <span class="signal" id="signal"></span>
         <span>Active Time · Seoul</span>
       </div>
 
@@ -605,10 +460,12 @@
 
   <script>
     const names = ["a", "b", "c", "d", "e", "f", "g"];
+
+    const widget = document.getElementById("widget");
+    const clockArea = document.getElementById("clockArea");
     const dateLabel = document.getElementById("dateLabel");
     const colon = document.getElementById("colon");
-    const signal = document.querySelector(".signal");
-    const clockArea = document.getElementById("clockArea");
+    const signal = document.getElementById("signal");
 
     const digitSegments = {
       0: ["a", "b", "c", "d", "e", "f"],
@@ -649,35 +506,67 @@
     });
 
     function setDigit(element, value) {
+      const active = digitSegments[value];
+
       names.forEach(name => {
         element
           .querySelector(`.${name}`)
-          .classList.toggle(
-            "active",
-            digitSegments[value].includes(name)
-          );
+          .classList.toggle("active", active.includes(name));
       });
     }
 
+    function getInnerSize(element) {
+      const rect = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
+
+      const paddingX =
+        parseFloat(style.paddingLeft) +
+        parseFloat(style.paddingRight);
+
+      const paddingY =
+        parseFloat(style.paddingTop) +
+        parseFloat(style.paddingBottom);
+
+      return {
+        width: Math.max(1, rect.width - paddingX),
+        height: Math.max(1, rect.height - paddingY)
+      };
+    }
+
     function fitTime() {
-      const area = clockArea.getBoundingClientRect();
+      const widgetRect = widget.getBoundingClientRect();
 
-      const baseWidth = 325;
-      const baseHeight = 118;
+      const shouldUseNumbersOnly =
+        widgetRect.width < 145 ||
+        widgetRect.height < 76;
 
-      const availableWidth = Math.max(0, area.width - 8);
-      const availableHeight = Math.max(0, area.height - 8);
+      widget.classList.toggle("numbers-only", shouldUseNumbersOnly);
 
-      const scale = Math.min(
-        1,
-        availableWidth / baseWidth,
-        availableHeight / baseHeight
-      );
+      requestAnimationFrame(() => {
+        const area = getInnerSize(clockArea);
 
-      document.documentElement.style.setProperty(
-        "--time-scale",
-        Math.max(0.22, scale).toFixed(3)
-      );
+        /*
+          기본 시간 표시 크기:
+          digit 4개 = 68 * 4
+          digit-group 내부 gap 2개 = 8 * 2
+          colon = 13
+          time gap 2개 = 12 * 2
+          skew 보정 여유 = 약 10
+        */
+        const baseWidth = 335;
+        const baseHeight = 118;
+
+        const scale = Math.min(
+          1,
+          area.width / baseWidth,
+          area.height / baseHeight
+        );
+
+        document.documentElement.style.setProperty(
+          "--time-scale",
+          Math.max(0.12, scale).toFixed(3)
+        );
+      });
     }
 
     function updateClock() {
@@ -697,15 +586,32 @@
 
       colon.classList.toggle("off", blinkOff);
       signal.classList.toggle("off", blinkOff);
+
       dateLabel.textContent = `${parts.year}.${parts.month}.${parts.day}`;
 
       fitTime();
     }
 
-    new ResizeObserver(fitTime).observe(clockArea);
+    const observer = new ResizeObserver(fitTime);
+
+    observer.observe(document.documentElement);
+    observer.observe(document.body);
+    observer.observe(widget);
+    observer.observe(clockArea);
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", fitTime);
+    }
+
     window.addEventListener("resize", fitTime);
 
     updateClock();
+    fitTime();
+
+    setTimeout(fitTime, 50);
+    setTimeout(fitTime, 300);
+    setTimeout(fitTime, 1000);
+
     setInterval(updateClock, 250);
   </script>
 </body>
