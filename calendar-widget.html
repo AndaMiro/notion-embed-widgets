@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+
+  <style>
+    :root {
+      color-scheme: light dark;
+      --text: #262626;
+      --muted: rgba(38, 38, 38, 0.46);
+      --line: rgba(38, 38, 38, 0.22);
+      --soft: rgba(38, 38, 38, 0.055);
+      --red: #c9302c;
+      --red-soft: rgba(201, 48, 44, 0.14);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --text: rgba(255, 255, 255, 0.88);
+        --muted: rgba(255, 255, 255, 0.42);
+        --line: rgba(255, 255, 255, 0.2);
+        --soft: rgba(255, 255, 255, 0.055);
+        --red: #ff453f;
+        --red-soft: rgba(255, 69, 63, 0.16);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    body {
+      display: flex;
+      align-items: stretch;
+      justify-content: stretch;
+      font-family: "Arial Narrow", Arial, sans-serif;
+      color: var(--text);
+    }
+
+    .calendar {
+      display: grid;
+      width: 100%;
+      height: 100%;
+      min-width: 0;
+      min-height: 0;
+      grid-template-rows: 24% 13% minmax(0, 1fr);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: transparent;
+    }
+
+    .header {
+      display: grid;
+      min-width: 0;
+      min-height: 0;
+      grid-template-columns: minmax(0, 1fr) 34%;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .title {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+      padding: 0 5%;
+      line-height: 0.9;
+    }
+
+    .month {
+      overflow: hidden;
+      font-family: Impact, "Arial Narrow", Arial, sans-serif;
+      font-size: min(10vw, 8.5vh);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .year {
+      margin-top: 0.35em;
+      color: var(--muted);
+      font-size: min(3.1vw, 2.8vh);
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      white-space: nowrap;
+    }
+
+    .today-panel {
+      display: flex;
+      min-width: 0;
+      min-height: 0;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+      border-left: 1px solid var(--red);
+      color: var(--red);
+      padding: 0 10%;
+    }
+
+    .today-label {
+      font-size: min(2.8vw, 2.5vh);
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .today-number {
+      margin-top: 0.08em;
+      font-family: Impact, "Arial Narrow", Arial, sans-serif;
+      font-size: min(12vw, 10vh);
+      line-height: 0.85;
+      white-space: nowrap;
+    }
+
+    .week {
+      display: grid;
+      min-height: 0;
+      grid-template-columns: repeat(7, 1fr);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .week span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-right: 1px solid var(--line);
+      color: var(--muted);
+      font-size: min(3vw, 2.8vh);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .week span:last-child {
+      border-right: 0;
+    }
+
+    .grid {
+      display: grid;
+      min-width: 0;
+      min-height: 0;
+      grid-template-columns: repeat(7, 1fr);
+      grid-template-rows: repeat(6, 1fr);
+    }
+
+    .day {
+      position: relative;
+      display: flex;
+      min-width: 0;
+      min-height: 0;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      color: var(--text);
+      font-size: min(5vw, 4.6vh);
+      font-weight: 900;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .day:nth-child(7n) {
+      border-right: 0;
+    }
+
+    .day:nth-last-child(-n + 7) {
+      border-bottom: 0;
+    }
+
+    .day.empty {
+      color: transparent;
+    }
+
+    .day.dim {
+      color: var(--muted);
+    }
+
+    .day.today {
+      color: var(--red);
+      background: var(--red-soft);
+    }
+
+    .day.today::before {
+      position: absolute;
+      inset: 12%;
+      content: "";
+      border: 1px solid var(--red);
+      pointer-events: none;
+    }
+
+    .day.today::after {
+      position: absolute;
+      right: 12%;
+      bottom: 12%;
+      left: 12%;
+      height: 10%;
+      content: "";
+      background: var(--red);
+      pointer-events: none;
+    }
+
+    .day.weekend {
+      background:
+        repeating-linear-gradient(
+          135deg,
+          transparent 0,
+          transparent 10%,
+          var(--soft) 10%,
+          var(--soft) 20%
+        );
+    }
+
+    @media (max-width: 180px), (max-height: 140px) {
+      .calendar {
+        grid-template-rows: 28% minmax(0, 1fr);
+      }
+
+      .week {
+        display: none;
+      }
+
+      .header {
+        grid-template-columns: minmax(0, 1fr) 32%;
+      }
+
+      .year {
+        display: none;
+      }
+
+      .month {
+        font-size: min(14vw, 10vh);
+      }
+
+      .today-label {
+        display: none;
+      }
+
+      .today-number {
+        font-size: min(16vw, 13vh);
+      }
+
+      .day {
+        font-size: min(7vw, 6vh);
+      }
+    }
+
+    @media (max-width: 110px), (max-height: 90px) {
+      .calendar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+      }
+
+      .header,
+      .week,
+      .grid {
+        display: none;
+      }
+
+      .micro {
+        display: block;
+      }
+    }
+
+    .micro {
+      display: none;
+      color: var(--text);
+      text-align: center;
+      font-weight: 900;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .micro .micro-day {
+      color: var(--red);
+      font-family: Impact, "Arial Narrow", Arial, sans-serif;
+      font-size: min(34vw, 34vh);
+    }
+
+    .micro .micro-date {
+      margin-top: 0.25em;
+      color: var(--muted);
+      font-size: min(10vw, 10vh);
+      letter-spacing: 0.08em;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="calendar" aria-label="대한민국 서울 현재 월 미니 달력">
+    <header class="header">
+      <div class="title">
+        <div class="month" id="monthLabel">MONTH</div>
+        <div class="year" id="yearLabel">0000</div>
+      </div>
+
+      <div class="today-panel">
+        <div class="today-label">Today</div>
+        <div class="today-number" id="todayNumber">00</div>
+      </div>
+    </header>
+
+    <section class="week" aria-hidden="true">
+      <span>Mo</span>
+      <span>Tu</span>
+      <span>We</span>
+      <span>Th</span>
+      <span>Fr</span>
+      <span>Sa</span>
+      <span>Su</span>
+    </section>
+
+    <section class="grid" id="grid"></section>
+
+    <section class="micro">
+      <div class="micro-day" id="microDay">00</div>
+      <div class="micro-date" id="microDate">0000.00</div>
+    </section>
+  </main>
+
+  <script>
+    const monthLabel = document.getElementById("monthLabel");
+    const yearLabel = document.getElementById("yearLabel");
+    const todayNumber = document.getElementById("todayNumber");
+    const microDay = document.getElementById("microDay");
+    const microDate = document.getElementById("microDate");
+    const grid = document.getElementById("grid");
+
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ];
+
+    function getKSTDateParts() {
+      const parts = Object.fromEntries(
+        new Intl.DateTimeFormat("en-CA", {
+          timeZone: "Asia/Seoul",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit"
+        })
+          .formatToParts(new Date())
+          .filter(part => part.type !== "literal")
+          .map(part => [part.type, part.value])
+      );
+
+      return {
+        year: Number(parts.year),
+        month: Number(parts.month),
+        day: Number(parts.day)
+      };
+    }
+
+    function renderCalendar() {
+      const now = getKSTDateParts();
+      const firstDay = new Date(now.year, now.month - 1, 1);
+      const lastDay = new Date(now.year, now.month, 0);
+      const daysInMonth = lastDay.getDate();
+
+      const mondayStartIndex = (firstDay.getDay() + 6) % 7;
+
+      monthLabel.textContent = monthNames[now.month - 1];
+      yearLabel.textContent = String(now.year);
+      todayNumber.textContent = String(now.day).padStart(2, "0");
+      microDay.textContent = String(now.day).padStart(2, "0");
+      microDate.textContent = `${now.year}.${String(now.month).padStart(2, "0")}`;
+
+      grid.innerHTML = "";
+
+      for (let index = 0; index < 42; index += 1) {
+        const cell = document.createElement("div");
+        cell.className = "day";
+
+        const date = index - mondayStartIndex + 1;
+
+        if (date < 1 || date > daysInMonth) {
+          cell.classList.add("empty");
+          cell.textContent = ".";
+        } else {
+          const dayOfWeek = index % 7;
+
+          cell.textContent = String(date);
+
+          if (dayOfWeek >= 5) {
+            cell.classList.add("weekend");
+          }
+
+          if (date === now.day) {
+            cell.classList.add("today");
+          }
+        }
+
+        grid.appendChild(cell);
+      }
+    }
+
+    renderCalendar();
+    setInterval(renderCalendar, 60 * 1000);
+  </script>
+</body>
+</html>
