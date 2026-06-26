@@ -1,3 +1,8 @@
+맞아. 지금 문제는 **너비가 줄 때 오른쪽 영역을 살리려고 숫자 크기도 같이 줄여야 하는데**, 이전 코드는 일정 너비에서 숫자/레이아웃을 고정값으로 갈아엎어서 답답해진 거야.
+
+아래 코드는 **형식 그대로 유지**하면서 JS가 `.clock-area` 실제 너비를 보고 **시간 숫자만 자동 축소**하게 만든 버전임. 그래서 `INTERNAL / EXTERNAL`은 최대한 오래 살아있고, 진짜 좁아져서 불가능할 때만 숫자만 남음.
+
+```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -14,6 +19,7 @@
       --segment-off: rgba(38, 38, 38, 0.055);
       --red: #c9302c;
       --red-muted: rgba(201, 48, 44, 0.25);
+      --time-scale: 1;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -107,7 +113,7 @@
     .content {
       display: grid;
       min-height: 0;
-      grid-template-columns: minmax(0, 1fr) 185px;
+      grid-template-columns: minmax(0, 1fr) 190px;
     }
 
     .clock-area {
@@ -123,7 +129,8 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      transform: skewX(-2deg);
+      transform: skewX(-2deg) scale(var(--time-scale));
+      transform-origin: center;
     }
 
     .digit-group {
@@ -212,7 +219,7 @@
       min-width: 0;
       min-height: 0;
       grid-template-rows: 1fr 1fr;
-      gap: 9px;
+      gap: 10px;
       padding: 11px;
       border-left: 1px solid var(--line);
     }
@@ -221,7 +228,7 @@
       display: grid;
       min-width: 0;
       overflow: hidden;
-      grid-template-columns: minmax(0, 1fr) 45px;
+      grid-template-columns: minmax(0, 1fr) 46px;
       border: 1px solid var(--red);
     }
 
@@ -336,31 +343,7 @@
       }
 
       .content {
-        grid-template-columns: minmax(0, 1fr) 150px;
-      }
-
-      .digit {
-        --width: 47px;
-        --height: 82px;
-        --thickness: 7px;
-      }
-
-      .digit-group {
-        gap: 5px;
-      }
-
-      .time {
-        gap: 7px;
-      }
-
-      .colon {
-        width: 9px;
-        height: 45px;
-      }
-
-      .colon span {
-        width: 7px;
-        height: 11px;
+        grid-template-columns: minmax(0, 1fr) 155px;
       }
 
       .status-area {
@@ -369,7 +352,7 @@
       }
 
       .status-box {
-        grid-template-columns: minmax(0, 1fr) 32px;
+        grid-template-columns: minmax(0, 1fr) 34px;
       }
 
       .status-copy {
@@ -377,7 +360,7 @@
       }
 
       .status-copy strong {
-        font-size: 21px;
+        font-size: 22px;
       }
 
       .status-copy span {
@@ -419,35 +402,11 @@
       }
 
       .content {
-        grid-template-columns: minmax(0, 1fr) 112px;
+        grid-template-columns: minmax(0, 1fr) 118px;
       }
 
       .clock-area {
         padding: 5px;
-      }
-
-      .digit {
-        --width: 36px;
-        --height: 66px;
-        --thickness: 5px;
-      }
-
-      .digit-group {
-        gap: 3px;
-      }
-
-      .time {
-        gap: 5px;
-      }
-
-      .colon {
-        width: 6px;
-        height: 35px;
-      }
-
-      .colon span {
-        width: 5px;
-        height: 8px;
       }
 
       .status-area {
@@ -456,7 +415,7 @@
       }
 
       .status-box {
-        grid-template-columns: minmax(0, 1fr) 22px;
+        grid-template-columns: minmax(0, 1fr) 24px;
       }
 
       .status-copy {
@@ -502,35 +461,11 @@
       }
 
       .content {
-        grid-template-columns: minmax(0, 1fr) 86px;
+        grid-template-columns: minmax(0, 1fr) 90px;
       }
 
       .clock-area {
         padding: 3px;
-      }
-
-      .digit {
-        --width: 28px;
-        --height: 52px;
-        --thickness: 4px;
-      }
-
-      .digit-group {
-        gap: 2px;
-      }
-
-      .time {
-        gap: 3px;
-      }
-
-      .colon {
-        width: 5px;
-        height: 29px;
-      }
-
-      .colon span {
-        width: 4px;
-        height: 6px;
       }
 
       .status-area {
@@ -539,7 +474,7 @@
       }
 
       .status-box {
-        grid-template-columns: minmax(0, 1fr) 15px;
+        grid-template-columns: minmax(0, 1fr) 16px;
       }
 
       .status-copy {
@@ -597,28 +532,8 @@
         padding: 0;
       }
 
-      .digit {
-        --width: 25px;
-        --height: 48px;
-        --thickness: 4px;
-      }
-
-      .digit-group {
-        gap: 3px;
-      }
-
       .time {
-        gap: 4px;
-      }
-
-      .colon {
-        width: 5px;
-        height: 28px;
-      }
-
-      .colon span {
-        width: 4px;
-        height: 6px;
+        transform: skewX(-2deg) scale(var(--time-scale));
       }
     }
 
@@ -627,30 +542,6 @@
       body,
       .widget {
         height: 62px;
-      }
-
-      .digit {
-        --width: 17px;
-        --height: 34px;
-        --thickness: 3px;
-      }
-
-      .digit-group {
-        gap: 2px;
-      }
-
-      .time {
-        gap: 3px;
-      }
-
-      .colon {
-        width: 4px;
-        height: 20px;
-      }
-
-      .colon span {
-        width: 3px;
-        height: 5px;
       }
     }
   </style>
@@ -671,8 +562,8 @@
     </header>
 
     <section class="content">
-      <div class="clock-area">
-        <div class="time">
+      <div class="clock-area" id="clockArea">
+        <div class="time" id="time">
           <div class="digit-group">
             <div class="digit"></div>
             <div class="digit"></div>
@@ -724,6 +615,7 @@
     const dateLabel = document.getElementById("dateLabel");
     const colon = document.getElementById("colon");
     const signal = document.querySelector(".signal");
+    const clockArea = document.getElementById("clockArea");
 
     const digitSegments = {
       0: ["a", "b", "c", "d", "e", "f"],
@@ -774,6 +666,22 @@
       });
     }
 
+    function fitTime() {
+      const area = clockArea.getBoundingClientRect();
+
+      const baseTimeWidth = 68 * 4 + 8 * 2 + 13 + 12 * 2;
+      const baseTimeHeight = 118;
+
+      const scaleByWidth = (area.width - 8) / baseTimeWidth;
+      const scaleByHeight = (area.height - 8) / baseTimeHeight;
+
+      const scale = Math.min(1, scaleByWidth, scaleByHeight);
+      document.documentElement.style.setProperty(
+        "--time-scale",
+        Math.max(0.25, scale).toFixed(3)
+      );
+    }
+
     function updateClock() {
       const parts = Object.fromEntries(
         formatter
@@ -792,10 +700,16 @@
       colon.classList.toggle("off", blinkOff);
       signal.classList.toggle("off", blinkOff);
       dateLabel.textContent = `${parts.year}.${parts.month}.${parts.day}`;
+
+      fitTime();
     }
+
+    new ResizeObserver(fitTime).observe(clockArea);
+    window.addEventListener("resize", fitTime);
 
     updateClock();
     setInterval(updateClock, 250);
   </script>
 </body>
 </html>
+```
